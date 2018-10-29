@@ -6,6 +6,7 @@ import com.blog.application.postservice.model.Comment;
 import com.blog.application.postservice.model.Post;
 import com.blog.application.postservice.repository.PostMysqlRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Primary
 @Qualifier("mysql")
 public class PostMysqlDAO implements PostDAO {
 
@@ -32,7 +34,7 @@ public class PostMysqlDAO implements PostDAO {
             allPosts.forEach(allPostList::add);
             return allPostList;
         }
-        return null;
+        return allPostList;
     }
 
     @Override
@@ -41,12 +43,13 @@ public class PostMysqlDAO implements PostDAO {
     }
 
     @Override
-    public void deletePostById(Integer postId) {
+    public boolean deletePostById(Integer postId) {
         postMysqlRepository.deleteById(postId);
+        return true;
     }
 
     @Override
-    public void addCommentToPost(Integer postId, Comment comment) {
+    public Post addCommentToPost(Integer postId, Comment comment) {
         Optional<Post> optionalPost = postMysqlRepository.findById(postId);
         if(optionalPost.isPresent()){
             Post post = optionalPost.get();
@@ -54,19 +57,22 @@ public class PostMysqlDAO implements PostDAO {
             comment.setDate(new Date());
             post.addComment(comment);
 
-            postMysqlRepository.save(post);
-        }
+            return postMysqlRepository.save(post);
+        } else
+            return null;
     }
 
     @Override
-    public void deleteCommentFromPost(Integer postId, Integer commentId) {
+    public boolean deleteCommentFromPost(Integer postId, Integer commentId) {
         Optional<Post> optionalPost = postMysqlRepository.findById(postId);
         if(optionalPost.isPresent()){
             Post post = optionalPost.get();
             post.removeComment(new Comment(commentId));
 
             postMysqlRepository.save(post);
+            return true;
         }
+        return false;
     }
 
     @Override

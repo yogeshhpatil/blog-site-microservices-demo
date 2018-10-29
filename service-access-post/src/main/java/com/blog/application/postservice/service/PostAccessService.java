@@ -15,7 +15,7 @@ public class PostAccessService {
 
     PostDAO postDAO;
 
-    public PostAccessService(@Qualifier("mysql") PostDAO postDAO) {
+    public PostAccessService(PostDAO postDAO) {
         this.postDAO = postDAO;
     }
 
@@ -31,12 +31,12 @@ public class PostAccessService {
         postDAO.deletePostById(postId);
     }
 
-    public void addCommentToPost(Integer postId, Comment comment) {
-        postDAO.addCommentToPost(postId,comment);
+    public Post addCommentToPost(Integer postId, Comment comment) {
+        return postDAO.addCommentToPost(postId,comment);
     }
 
-    public void deleteCommentFromPost(Integer postId, Integer commentId) {
-        postDAO.deleteCommentFromPost(postId,commentId);
+    public boolean deleteCommentFromPost(Integer postId, Integer commentId) {
+        return postDAO.deleteCommentFromPost(postId,commentId);
     }
 
     public Post addNewPost(Post post) {

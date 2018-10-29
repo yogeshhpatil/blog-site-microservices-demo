@@ -14,14 +14,14 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer commentId;
 
-    @NotNull
+    @NotNull(message = "text can not be null")
     private String text;
 
-    @NotNull
+    @NotNull(message = "Username can not be null")
     private String username;
 
-    @NotNull
-    @Email
+    @NotNull(message = "Email can not be null")
+    @Email(message = "must be a well-formed email address")
     private String email;
 
     private Date date;

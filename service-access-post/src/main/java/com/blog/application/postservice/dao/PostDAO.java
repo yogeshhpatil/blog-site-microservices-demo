@@ -11,11 +11,11 @@ public interface PostDAO {
 
     Optional<Post> getPostById(Integer postId);
 
-    void deletePostById(Integer postId);
+    boolean deletePostById(Integer postId);
 
-    void addCommentToPost(Integer postId, Comment comment);
+    Post addCommentToPost(Integer postId, Comment comment);
 
-    void deleteCommentFromPost(Integer postId, Integer commentId);
+    boolean deleteCommentFromPost(Integer postId, Integer commentId);
 
     Post addNewPost(Post post);
 

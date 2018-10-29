@@ -1,13 +1,17 @@
 package com.blog.application.postservice.controller;
 
+import com.blog.application.postservice.exceptiondetails.PostNotFoundException;
 import com.blog.application.postservice.service.PostAccessService;
 import com.blog.application.postservice.model.Comment;
 import com.blog.application.postservice.model.Post;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,47 +28,79 @@ public class PostController {
 
     @GetMapping
     @ApiOperation(value = "Get all posts", response = List.class, tags = "Version 1")
-    public List<Post> getAllPost() {
-        return postAccessService.getAllPost();
+    public ResponseEntity<List<Post>> getAllPost() {
+        List<Post> allPost = postAccessService.getAllPost();
+
+        if(allPost.isEmpty())
+            throw new PostNotFoundException("No Post Found");
+
+        return ResponseEntity.ok(allPost);
     }
 
     @GetMapping(params = {"category"})
     @ApiOperation(value = "Get posts by Category", response = List.class, tags = "Version 1")
-    public List<Post> getPostByCategory(@RequestParam String category) {
-        return postAccessService.getPostByCategory(category);
-    }
+    public ResponseEntity<List<Post>> getPostByCategory(@RequestParam String category) {
+        List<Post> postByCategory = postAccessService.getPostByCategory(category);
 
-    @PostMapping
-    @ApiOperation(value = "Add New Post", tags = "Version 1")
-    public Post addPost(@Valid @RequestBody Post post) {
-        return postAccessService.addNewPost(post);
+        if(postByCategory.isEmpty())
+            throw new PostNotFoundException("No Post Found");
+
+        return ResponseEntity.ok(postByCategory);
     }
 
     @GetMapping("/{postId}")
     @ApiOperation(value = "Get specific post by postId", response = Post.class, tags = "Version 1")
-    public Optional<Post> getPost(@PathVariable(name = "postId") Integer postId) {
-        return postAccessService.getPostById(postId);
+    public ResponseEntity<Post> getPost(@PathVariable(name = "postId") Integer postId) {
+
+        Optional<Post> postById = postAccessService.getPostById(postId);
+
+        if(postById.isPresent())
+            return ResponseEntity.ok(postById.get());
+
+        throw new PostNotFoundException("No Post Found");
     }
 
-    @DeleteMapping("/{postId}")
-    @ApiOperation(value = "Delete specific post", tags = "Version 1")
-    public void deletePost(@PathVariable(value = "postId") Integer postId) {
-        postAccessService.deletePostById(postId);
+    @PostMapping
+    @ApiOperation(value = "Add New Post", tags = "Version 1")
+    public ResponseEntity<Object> addPost(@Valid @RequestBody Post post) {
+        Post newPost = postAccessService.addNewPost(post);
+
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newPost.getPostId()).toUri();
+
+        return ResponseEntity.created(uri).build();
     }
 
     @PostMapping("/{postId}/comments")
     @ApiOperation(value = "Comment to post", tags = "Version 1")
-    public void commentPost(@PathVariable(value = "postId") Integer postId,
-                            @Valid @RequestBody Comment comment) {
+    public ResponseEntity<Object> commentPost(@PathVariable(value = "postId") Integer postId,
+                                              @Valid @RequestBody Comment comment) {
 
-        postAccessService.addCommentToPost(postId,comment);
+        Post post = postAccessService.addCommentToPost(postId, comment);
+        if (post!=null){
+
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
+
+            return ResponseEntity.created(uri).build();
+        }
+        throw new PostNotFoundException("No Post Found");
+    }
+
+    @DeleteMapping("/{postId}")
+    @ApiOperation(value = "Delete specific post", tags = "Version 1")
+    public ResponseEntity<Object> deletePost(@PathVariable(value = "postId") Integer postId) {
+        postAccessService.deletePostById(postId);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{postId}/comments/{commentId}")
     @ApiOperation(value = "Delete Comment from post", tags = "Version 1")
-    public void deleteComment(@PathVariable(value = "postId") Integer postId,
-                              @PathVariable(value = "commentId") Integer commentId) {
-        postAccessService.deleteCommentFromPost(postId,commentId);
-    }
+    public ResponseEntity<Object> deleteComment(@PathVariable(value = "postId") Integer postId,
+                                                @PathVariable(value = "commentId") Integer commentId) {
+        boolean commentFromPost = postAccessService.deleteCommentFromPost(postId, commentId);
 
+        if(commentFromPost)
+            return ResponseEntity.noContent().build();
+
+        throw new PostNotFoundException("No Post Found");
+    }
 }
