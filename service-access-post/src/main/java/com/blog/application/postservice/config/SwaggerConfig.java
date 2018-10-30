@@ -4,14 +4,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
 
 @Configuration
@@ -32,15 +32,16 @@ public class SwaggerConfig implements WebMvcConfigurer {
     public Docket api() {
         //Register the controllers to swagger
         //Also it is configuring the Swagger Docket
-        return new Docket(DocumentationType.SWAGGER_2).select()
-                // .apis(RequestHandlerSelectors.any())
+        return new Docket(DocumentationType.SWAGGER_2)//.select()
+//                 .apis(RequestHandlerSelectors.any())
 //                .apis(Predicates.not(RequestHandlerSelectors.basePackage("org.springframework.boot")))
-                .apis(RequestHandlerSelectors.basePackage("com.blog.application.postservice"))
-                 .paths(PathSelectors.any())
-                // .paths(PathSelectors.ant("/swagger2-demo"))
-                .build()
-                .apiInfo(getApiInfo())
-                .genericModelSubstitutes(Optional.class);
+//                .apis(RequestHandlerSelectors.basePackage("com.blog.application.postservice"))
+//                 .paths(PathSelectors.any())
+//                 .paths(PathSelectors.ant("/swagger2-demo"))
+//                .build()
+                .consumes(new HashSet<String>(Arrays.asList("application/json","application/xml")))
+                .produces(new HashSet<String>(Arrays.asList("application/json","application/xml")))
+                .apiInfo(getApiInfo());
     }
 
     private ApiInfo getApiInfo() {

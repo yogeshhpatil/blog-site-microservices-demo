@@ -6,9 +6,12 @@ import com.blog.application.postservice.model.Comment;
 import com.blog.application.postservice.model.Post;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -50,14 +53,22 @@ public class PostController {
 
     @GetMapping("/{postId}")
     @ApiOperation(value = "Get specific post by postId", response = Post.class, tags = "Version 1")
-    public ResponseEntity<Post> getPost(@PathVariable(name = "postId") Integer postId) {
+    public Resource<Post> getPost(@PathVariable(name = "postId") Integer postId) {
 
         Optional<Post> postById = postAccessService.getPostById(postId);
 
-        if(postById.isPresent())
-            return ResponseEntity.ok(postById.get());
+        if(!postById.isPresent())
+            throw new PostNotFoundException("No Post Found");
 
-        throw new PostNotFoundException("No Post Found");
+        //HATEOAS
+        Resource<Post> resource = new Resource<>(postById.get());
+
+        ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllPost());
+        resource.add(linkTo.withRel("all-posts"));
+        return resource;
+
+//        Normal Response Entity
+//        return ResponseEntity.ok(postById.get());
     }
 
     @PostMapping
