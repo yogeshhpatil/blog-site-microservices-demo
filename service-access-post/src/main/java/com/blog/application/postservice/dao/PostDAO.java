@@ -1,6 +1,5 @@
 package com.blog.application.postservice.dao;
 
-import com.blog.application.postservice.model.Comment;
 import com.blog.application.postservice.model.Post;
 
 import java.util.List;
@@ -11,14 +10,7 @@ public interface PostDAO {
 
     Optional<Post> getPostById(Integer postId);
 
-    boolean deletePostById(Integer postId);
-
-    Post addCommentToPost(Integer postId, Comment comment);
-
-    boolean deleteCommentFromPost(Integer postId, Integer commentId);
-
     Post addNewPost(Post post);
 
-    List<Post> getPostByCategory(String category);
-
+    boolean deletePostById(Integer postId);
 }

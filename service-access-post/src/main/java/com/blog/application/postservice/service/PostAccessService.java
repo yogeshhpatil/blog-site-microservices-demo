@@ -1,12 +1,10 @@
 package com.blog.application.postservice.service;
 
-
 import com.blog.application.postservice.dao.PostDAO;
-import com.blog.application.postservice.model.Comment;
 import com.blog.application.postservice.model.Post;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,23 +25,12 @@ public class PostAccessService {
         return postDAO.getPostById(postId);
     }
 
-    public void deletePostById(Integer postId) {
-        postDAO.deletePostById(postId);
-    }
-
-    public Post addCommentToPost(Integer postId, Comment comment) {
-        return postDAO.addCommentToPost(postId,comment);
-    }
-
-    public boolean deleteCommentFromPost(Integer postId, Integer commentId) {
-        return postDAO.deleteCommentFromPost(postId,commentId);
-    }
-
     public Post addNewPost(Post post) {
+        post.setPostingDate(new Date());
         return postDAO.addNewPost(post);
     }
 
-    public List<Post> getPostByCategory(String category) {
-        return postDAO.getPostByCategory(category);
+    public void deletePostById(Integer postId) {
+        postDAO.deletePostById(postId);
     }
 }

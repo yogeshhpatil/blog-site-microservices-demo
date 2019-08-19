@@ -12,7 +12,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Optional;
 
 @Configuration
 @EnableSwagger2

@@ -1,8 +1,8 @@
 package com.blog.application.postservice.controller;
 
 import com.blog.application.postservice.exceptiondetails.PostNotFoundException;
+import com.blog.application.postservice.model.PostList;
 import com.blog.application.postservice.service.PostAccessService;
-import com.blog.application.postservice.model.Comment;
 import com.blog.application.postservice.model.Post;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,25 +30,17 @@ public class PostController {
     }
 
     @GetMapping
-    @ApiOperation(value = "Get all posts", response = List.class, tags = "Version 1")
-    public ResponseEntity<List<Post>> getAllPost() {
+    @ApiOperation(value = "Get all posts", response = PostList.class, tags = "Version 1")
+    public ResponseEntity<PostList> getAllPost() {
         List<Post> allPost = postAccessService.getAllPost();
 
         if(allPost.isEmpty())
             throw new PostNotFoundException("No Post Found");
 
-        return ResponseEntity.ok(allPost);
-    }
+        PostList postList = new PostList();
+        postList.setPosts(allPost);
 
-    @GetMapping(params = {"category"})
-    @ApiOperation(value = "Get posts by Category", response = List.class, tags = "Version 1")
-    public ResponseEntity<List<Post>> getPostByCategory(@RequestParam String category) {
-        List<Post> postByCategory = postAccessService.getPostByCategory(category);
-
-        if(postByCategory.isEmpty())
-            throw new PostNotFoundException("No Post Found");
-
-        return ResponseEntity.ok(postByCategory);
+        return ResponseEntity.ok(postList);
     }
 
     @GetMapping("/{postId}")
@@ -76,24 +68,9 @@ public class PostController {
     public ResponseEntity<Object> addPost(@Valid @RequestBody Post post) {
         Post newPost = postAccessService.addNewPost(post);
 
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newPost.getPostId()).toUri();
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newPost.getId()).toUri();
 
         return ResponseEntity.created(uri).build();
-    }
-
-    @PostMapping("/{postId}/comments")
-    @ApiOperation(value = "Comment to post", tags = "Version 1")
-    public ResponseEntity<Object> commentPost(@PathVariable(value = "postId") Integer postId,
-                                              @Valid @RequestBody Comment comment) {
-
-        Post post = postAccessService.addCommentToPost(postId, comment);
-        if (post!=null){
-
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
-
-            return ResponseEntity.created(uri).build();
-        }
-        throw new PostNotFoundException("No Post Found");
     }
 
     @DeleteMapping("/{postId}")
@@ -101,17 +78,5 @@ public class PostController {
     public ResponseEntity<Object> deletePost(@PathVariable(value = "postId") Integer postId) {
         postAccessService.deletePostById(postId);
         return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{postId}/comments/{commentId}")
-    @ApiOperation(value = "Delete Comment from post", tags = "Version 1")
-    public ResponseEntity<Object> deleteComment(@PathVariable(value = "postId") Integer postId,
-                                                @PathVariable(value = "commentId") Integer commentId) {
-        boolean commentFromPost = postAccessService.deleteCommentFromPost(postId, commentId);
-
-        if(commentFromPost)
-            return ResponseEntity.noContent().build();
-
-        throw new PostNotFoundException("No Post Found");
     }
 }
