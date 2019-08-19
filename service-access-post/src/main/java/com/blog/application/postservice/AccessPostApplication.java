@@ -6,11 +6,12 @@ import com.blog.application.postservice.repository.PostMysqlRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 import java.util.Date;
 
 @SpringBootApplication
-//@EnableEurekaClient
+@EnableEurekaClient
 public class AccessPostApplication implements CommandLineRunner {
 
 	PostMysqlRepository postMysqlRepository;
