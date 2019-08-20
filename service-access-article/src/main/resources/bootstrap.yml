@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: service-access-article
+---
+spring:
+  cloud:
+    config:
+      server:
+        bootstrap: false
+        git:
+          uri: https://github.com/yogeshhpatil/cloud-config.git
+
+# bootstrap: false -> take local profiles :: true -> check git repo for profiles
+# Whether the Spring Cloud Config Server should configure iteslf with the loaded configuration.
