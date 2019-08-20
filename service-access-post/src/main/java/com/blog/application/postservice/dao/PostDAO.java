@@ -8,6 +8,8 @@ import java.util.Optional;
 public interface PostDAO {
     List<Post> getAllPost();
 
+    List<Post> getAllPostByUser(String userId);
+
     Optional<Post> getPostById(Integer postId);
 
     Post addNewPost(Post post);

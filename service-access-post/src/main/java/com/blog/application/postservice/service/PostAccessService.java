@@ -2,10 +2,10 @@ package com.blog.application.postservice.service;
 
 import com.blog.application.postservice.dao.PostDAO;
 import com.blog.application.postservice.model.Post;
+import com.blog.application.postservice.model.PostList;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,11 +17,19 @@ public class PostAccessService {
         this.postDAO = postDAO;
     }
 
-    public List<Post> getAllPost(){
-        return postDAO.getAllPost();
+    public PostList getAllPost() {
+        PostList postList = new PostList();
+        postList.setPosts(postDAO.getAllPost());
+        return postList;
     }
 
-    public Optional<Post> getPostById(Integer postId){
+    public PostList getAllPostByUser(String userId) {
+        PostList postList = new PostList();
+        postList.setPosts(postDAO.getAllPostByUser(userId));
+        return postList;
+    }
+
+    public Optional<Post> getPostById(Integer postId) {
         return postDAO.getPostById(postId);
     }
 

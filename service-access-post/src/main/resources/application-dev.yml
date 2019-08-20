@@ -23,7 +23,7 @@ spring:
       enabled: true
 
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: create    # if this enabled no need for schema.sql
 

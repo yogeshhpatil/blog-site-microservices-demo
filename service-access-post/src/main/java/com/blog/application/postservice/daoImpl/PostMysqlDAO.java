@@ -35,6 +35,11 @@ public class PostMysqlDAO implements PostDAO {
     }
 
     @Override
+    public List<Post> getAllPostByUser(String userId) {
+        return postMysqlRepository.findByUserId(userId);
+    }
+
+    @Override
     public Optional<Post> getPostById(Integer postId) {
         return postMysqlRepository.findById(postId);
     }

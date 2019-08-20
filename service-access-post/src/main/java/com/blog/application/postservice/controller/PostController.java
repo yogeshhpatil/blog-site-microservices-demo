@@ -6,16 +6,12 @@ import com.blog.application.postservice.service.PostAccessService;
 import com.blog.application.postservice.model.Post;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -31,36 +27,30 @@ public class PostController {
 
     @GetMapping
     @ApiOperation(value = "Get all posts", response = PostList.class, tags = "Version 1")
-    public ResponseEntity<PostList> getAllPost() {
-        List<Post> allPost = postAccessService.getAllPost();
+    public ResponseEntity<PostList> getAllPost(@RequestParam(defaultValue = "") String userId) {
+        PostList allPost;
+        if (userId.isEmpty()) {
+            allPost = postAccessService.getAllPost();
+        } else {
+            allPost = postAccessService.getAllPostByUser(userId);
+        }
 
-        if(allPost.isEmpty())
+        if(allPost.getPosts().isEmpty())
             throw new PostNotFoundException("No Post Found");
 
-        PostList postList = new PostList();
-        postList.setPosts(allPost);
-
-        return ResponseEntity.ok(postList);
+        return ResponseEntity.ok(allPost);
     }
 
     @GetMapping("/{postId}")
     @ApiOperation(value = "Get specific post by postId", response = Post.class, tags = "Version 1")
-    public Resource<Post> getPost(@PathVariable(name = "postId") Integer postId) {
+    public ResponseEntity<Post> getPost(@PathVariable(name = "postId") Integer postId) {
 
         Optional<Post> postById = postAccessService.getPostById(postId);
 
         if(!postById.isPresent())
             throw new PostNotFoundException("No Post Found");
 
-        //HATEOAS
-        Resource<Post> resource = new Resource<>(postById.get());
-
-        ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllPost());
-        resource.add(linkTo.withRel("all-posts"));
-        return resource;
-
-//        Normal Response Entity
-//        return ResponseEntity.ok(postById.get());
+        return ResponseEntity.ok(postById.get());
     }
 
     @PostMapping
