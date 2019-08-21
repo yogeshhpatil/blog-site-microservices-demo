@@ -1,0 +1,54 @@
+server:
+  port: 8083
+spring:
+  #  datasource:
+  #    platform: mysql    # will run data-mysql.sql file
+  #    url: jdbc:mysql://127.0.0.1:3306/springDb
+  #    username: root
+  #    password: Talent_123
+  #    driver-class-name: com.mysql.jdbc.Driver
+
+  #  jpa.hibernate.naming_strategy: org.hibernate.cfg.EJB3NamingStrategy    # to enable use of @Column
+
+  datasource:
+    platform: h2      # will run data-h2.sql file
+    url: jdbc:h2:mem:springDb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  # Enabling H2 Console
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: create    # if this enabled no need for schema.sql
+
+#activates actuators
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+#eureka:         #tells about the Eureka server details and its refresh time
+#  instance:
+#    leaseRenewalIntervalInSeconds: 1
+#    leaseExpirationDurationInSeconds: 2
+#  client:
+#    service-url:
+#      defaultZone: http://localhost:8081/eureka/
+#    healthcheck:
+#      enabled: true
+#    lease:
+#      duration: 5
+#
+#management:
+#  security:
+#    enabled: false  #disable the spring security on the management endpoints like /env, /refresh etc.
