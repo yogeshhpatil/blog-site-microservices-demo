@@ -1,4 +1,5 @@
-package com.blog.application.serviceArticles.config;
+package com.blog.application.servicecomments.config;
+
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,22 +19,23 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
     @Bean
     public Docket api() {
-            return new Docket(DocumentationType.SWAGGER_2)
-                    .select()
-                    .apis(RequestHandlerSelectors.basePackage("com.blog.application"))
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.blog.application"))
 //                    .apis(RequestHandlerSelectors.any())
 //                    .paths(PathSelectors.ant("/v1/*"))
-                    .build()
-                    .apiInfo(getApiInfo());
+                .build()
+                .apiInfo(getApiInfo());
     }
 
     private ApiInfo getApiInfo() {
         return new ApiInfo(
-                "Article Access REST API",
-                "API expose some REST end points to access articles.",
+                "Comments Access REST API",
+                "API expose some REST end points to access comments.",
                 "V 1.0",
                 "Terms of service",
                 new Contact("Yogesh Patil", "http://www.github.com/yogeshhpatil", "yogesh.hpatil4@gmail.com"),
                 "License of API", "http://www.github.com/yogeshhpatil", Collections.emptyList());
     }
 }
+
