@@ -4,7 +4,6 @@ import com.blog.application.serviceArticles.exceptiondetails.ArticleNotFoundExce
 import com.blog.application.serviceArticles.model.ArticlesList;
 import com.blog.application.serviceArticles.service.ArticlesService;
 import com.blog.application.serviceArticles.model.Article;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/articles")
-@Api(value = "ArticlesController", description = "Provide end point to access articles")
 public class ArticlesController {
 
     ArticlesService articlesService;
@@ -26,7 +24,7 @@ public class ArticlesController {
     }
 
     @GetMapping
-    @ApiOperation(value = "Get all articles", response = ArticlesList.class, tags = "Version 1")
+    @ApiOperation(value = "Get all articles", response = ArticlesList.class)
     public ResponseEntity<ArticlesList> getAllArticle(@RequestParam(defaultValue = "") String userId) {
         ArticlesList allArticle;
         if (userId.isEmpty()) {
@@ -42,7 +40,7 @@ public class ArticlesController {
     }
 
     @GetMapping("/{articleId}")
-    @ApiOperation(value = "Get specific article by articleId", response = Article.class, tags = "Version 1")
+    @ApiOperation(value = "Get specific article by articleId", response = Article.class)
     public ResponseEntity<Article> getArticle(@PathVariable(name = "articleId") Integer articleId) {
 
         Optional<Article> articleById = articlesService.getArticleById(articleId);
@@ -54,7 +52,7 @@ public class ArticlesController {
     }
 
     @PostMapping
-    @ApiOperation(value = "Add New Article", tags = "Version 1")
+    @ApiOperation(value = "Add New Article")
     public ResponseEntity<Object> addArticle(@Valid @RequestBody Article article) {
         Article newArticle = articlesService.addArticle(article);
 
@@ -64,7 +62,7 @@ public class ArticlesController {
     }
 
     @DeleteMapping("/{articleId}")
-    @ApiOperation(value = "Delete specific article", tags = "Version 1")
+    @ApiOperation(value = "Delete specific article")
     public ResponseEntity<Object> deleteArticle(@PathVariable(value = "articleId") Integer articleId) {
         articlesService.deleteArticleById(articleId);
         return ResponseEntity.noContent().build();
