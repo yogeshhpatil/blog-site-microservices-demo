@@ -1,5 +1,6 @@
 package com.blog.application.servicearticlelibrary.service;
 
+import com.blog.application.servicearticlelibrary.model.Article;
 import com.blog.application.servicearticlelibrary.model.ArticlesList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,4 +26,12 @@ public class ArticlesService {
                 .block();
     }
 
+    public Article getArticleById(String articleId) {
+        return webClientBuilder.build()
+                .method(HttpMethod.GET)
+                .uri("http://" + serviceName + "/v1/articles/" + articleId)
+                .retrieve()
+                .bodyToMono(Article.class)
+                .block();
+    }
 }

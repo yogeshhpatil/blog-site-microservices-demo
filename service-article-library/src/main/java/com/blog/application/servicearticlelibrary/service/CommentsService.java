@@ -22,16 +22,10 @@ public class CommentsService {
     private String serviceName;
 
     public ArticlesList getCommentsForArticles(ArticlesList articlesList) {
-        System.out.println("serviceName : "+serviceName);
         List<Article> articles = articlesList.getArticles()
                 .stream()
                 .map(article -> {
-                    CommentList commentList = webClientBuilder.build()
-                            .method(HttpMethod.GET)
-                            .uri("http://" + serviceName + "/v1/comments?postId=" + article.getId())
-                            .retrieve()
-                            .bodyToMono(CommentList.class)
-                            .block();
+                    CommentList commentList = getComments(article);
 
                     article.setCommentList(commentList);
                     return article;
@@ -40,6 +34,15 @@ public class CommentsService {
         articlesList.setArticles(articles);
 
         return articlesList;
+    }
+
+    public CommentList getComments(Article article) {
+        return webClientBuilder.build()
+                .method(HttpMethod.GET)
+                .uri("http://" + serviceName + "/v1/comments?postId=" + article.getId())
+                .retrieve()
+                .bodyToMono(CommentList.class)
+                .block();
     }
 
 }
