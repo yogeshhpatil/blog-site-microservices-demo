@@ -1,2 +1,6 @@
 server:
   port: 8081
+
+name:
+  articles-service: service-articles
+  comments-service: service-comments
