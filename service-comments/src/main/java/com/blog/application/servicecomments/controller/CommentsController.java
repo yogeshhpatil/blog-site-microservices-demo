@@ -11,7 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/comments")
+@RequestMapping("/v1/comments")
 public class CommentsController {
 
     @Autowired
